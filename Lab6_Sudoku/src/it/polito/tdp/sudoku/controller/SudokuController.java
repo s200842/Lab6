@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.sudoku.model.Scacchiera;
 import it.polito.tdp.sudoku.model.SudokuGenerator;
+import it.polito.tdp.sudoku.model.SudokuSolver;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 
 public class SudokuController {
@@ -266,23 +269,41 @@ public class SudokuController {
     private Label lbl81;
     
     List<Label> labelList = new ArrayList<Label>(); 
+    SudokuSolver model;
+    
+    @FXML
+    private ChoiceBox<String> difficultyBox;
+    
+    void setModel(SudokuSolver model){
+    	this.model = model;
+    }
     
     @FXML
     void doGenerate(ActionEvent event){
-    	// Per generare un nuova nuova griglia di Sudoku
+    	// Per generare una nuova nuova griglia di Sudoku
 		SudokuGenerator sg = new SudokuGenerator();
-		int [][] matrix = sg.nextBoard(levelExpert);
-		
-		printMatrixOnScreen(matrix);
+		if(difficultyBox.getValue().compareTo("Easy") == 0){
+			int [][] matrix = sg.nextBoard(levelEasy);
+			printMatrixOnScreen(matrix);
+		}
+		else if(difficultyBox.getValue().compareTo("Normal") == 0){
+			int [][] matrix = sg.nextBoard(levelAdvanced);
+			printMatrixOnScreen(matrix);
+		}
+		else if(difficultyBox.getValue().compareTo("Hard") == 0){
+			int [][] matrix = sg.nextBoard(levelExpert);
+			printMatrixOnScreen(matrix);
+		}
     }
     
     @FXML
     void doSolve(ActionEvent event){
-    	
+    	List<Scacchiera> result = model.prepare(labelList);
     }
     
     @FXML
     void initialize() {
+    	assert difficultyBox != null : "fx:id=\"difficultyBox\" was not injected: check your FXML file 'Sudoku.fxml'.";
         assert lbl10 != null : "fx:id=\"lbl10\" was not injected: check your FXML file 'Sudoku.fxml'.";
         assert lbl11 != null : "fx:id=\"lbl11\" was not injected: check your FXML file 'Sudoku.fxml'.";
         assert lbl12 != null : "fx:id=\"lbl12\" was not injected: check your FXML file 'Sudoku.fxml'.";
@@ -365,87 +386,101 @@ public class SudokuController {
         assert lbl80 != null : "fx:id=\"lbl80\" was not injected: check your FXML file 'Sudoku.fxml'.";
         assert lbl81 != null : "fx:id=\"lbl81\" was not injected: check your FXML file 'Sudoku.fxml'.";
         
+        //Prima riga
         labelList.add(lbl1);
         labelList.add(lbl2);
         labelList.add(lbl3);
-        labelList.add(lbl4);
-        labelList.add(lbl5);
-        labelList.add(lbl6);
-        labelList.add(lbl7);
-        labelList.add(lbl8);
-        labelList.add(lbl9);
         labelList.add(lbl10);
         labelList.add(lbl11);
         labelList.add(lbl12);
-        labelList.add(lbl13);
-        labelList.add(lbl14);
-        labelList.add(lbl15);
-        labelList.add(lbl16);
-        labelList.add(lbl17);
-        labelList.add(lbl18);
         labelList.add(lbl19);
         labelList.add(lbl20);
         labelList.add(lbl21);
+        //Seconda riga
+        labelList.add(lbl4);
+        labelList.add(lbl5);
+        labelList.add(lbl6);
+        labelList.add(lbl13);
+        labelList.add(lbl14);
+        labelList.add(lbl15);
         labelList.add(lbl22);
         labelList.add(lbl23);
         labelList.add(lbl24);
+        //Terza riga
+        labelList.add(lbl7);
+        labelList.add(lbl8);
+        labelList.add(lbl9);
+        labelList.add(lbl16);
+        labelList.add(lbl17);
+        labelList.add(lbl18);
         labelList.add(lbl25);
         labelList.add(lbl26);
         labelList.add(lbl27);
+        //Quarta riga
         labelList.add(lbl28);
         labelList.add(lbl29);
         labelList.add(lbl30);
-        labelList.add(lbl31);
-        labelList.add(lbl32);
-        labelList.add(lbl33);
-        labelList.add(lbl34);
-        labelList.add(lbl35);
-        labelList.add(lbl36);
         labelList.add(lbl37);
         labelList.add(lbl38);
         labelList.add(lbl39);
-        labelList.add(lbl40);
-        labelList.add(lbl41);
-        labelList.add(lbl42);
-        labelList.add(lbl43);
-        labelList.add(lbl44);
-        labelList.add(lbl45);
         labelList.add(lbl46);
         labelList.add(lbl47);
         labelList.add(lbl48);
+        //Quinta riga
+        labelList.add(lbl31);
+        labelList.add(lbl32);
+        labelList.add(lbl33);
+        labelList.add(lbl40);
+        labelList.add(lbl41);
+        labelList.add(lbl42);
         labelList.add(lbl49);
         labelList.add(lbl50);
         labelList.add(lbl51);
+        //Sesta riga
+        labelList.add(lbl34);
+        labelList.add(lbl35);
+        labelList.add(lbl36);
+        labelList.add(lbl43);
+        labelList.add(lbl44);
+        labelList.add(lbl45);   
         labelList.add(lbl52);
         labelList.add(lbl53);
         labelList.add(lbl54);
+        //Settima riga
         labelList.add(lbl55);
         labelList.add(lbl56);
         labelList.add(lbl57);
-        labelList.add(lbl58);
-        labelList.add(lbl59);
-        labelList.add(lbl60);
-        labelList.add(lbl61);
-        labelList.add(lbl62);
-        labelList.add(lbl63);
         labelList.add(lbl64);
         labelList.add(lbl65);
         labelList.add(lbl66);
-        labelList.add(lbl67);
-        labelList.add(lbl68);
-        labelList.add(lbl69);
-        labelList.add(lbl70);
-        labelList.add(lbl71);
-        labelList.add(lbl72);
         labelList.add(lbl73);
         labelList.add(lbl74);
         labelList.add(lbl75);
+        //Ottava riga
+        labelList.add(lbl58);
+        labelList.add(lbl59);
+        labelList.add(lbl60);
+        labelList.add(lbl67);
+        labelList.add(lbl68);
+        labelList.add(lbl69);
         labelList.add(lbl76);
         labelList.add(lbl77);
         labelList.add(lbl78);
+        //Nona riga
+        labelList.add(lbl61);
+        labelList.add(lbl62);
+        labelList.add(lbl63);       
+        labelList.add(lbl70);
+        labelList.add(lbl71);
+        labelList.add(lbl72);        
         labelList.add(lbl79);
         labelList.add(lbl80);
         labelList.add(lbl81);
+        
+        difficultyBox.getItems().add("Easy");
+        difficultyBox.getItems().add("Normal");
+        difficultyBox.getItems().add("Hard");
+        difficultyBox.setValue("");
     }
     
     

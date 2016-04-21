@@ -131,7 +131,7 @@ public class SudokuGenerator {
 		/*
 		 * We define difficulty as follows: Easy: 32+ clues (49 or fewer holes)
 		 * Medium: 27-31 clues (50-54 holes) Hard: 26 or fewer clues (54+ holes)
-		 * This is human difficulty, not algorighmically (though there is some
+		 * This is human difficulty, not algorithmically (though there is some
 		 * correlation)
 		 */
 		double remainingSquares = 81;
