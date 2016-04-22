@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import it.polito.tdp.sudoku.model.Scacchiera;
 import it.polito.tdp.sudoku.model.SudokuGenerator;
 import it.polito.tdp.sudoku.model.SudokuSolver;
 import javafx.event.ActionEvent;
@@ -298,7 +297,7 @@ public class SudokuController {
     
     @FXML
     void doSolve(ActionEvent event){
-    	List<Scacchiera> result = model.prepare(labelList);
+    	model.prepare(labelList);
     }
     
     @FXML

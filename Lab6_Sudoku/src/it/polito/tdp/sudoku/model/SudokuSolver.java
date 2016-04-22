@@ -6,175 +6,117 @@ import javafx.scene.control.Label;
 
 public class SudokuSolver {
 	
-	private Scacchiera layout;
-	private List<Integer> valori;
-	private List<Scacchiera> tutte;
+	private int[][] scacchiera;
+	private int[] valori;
 	
 	public SudokuSolver(){
-		layout = new Scacchiera();
-		tutte = new ArrayList<Scacchiera>();
-		valori = new ArrayList<Integer>();
-		for(int i=1; i<=9; i++){
-			valori.add(i);
+		//Inizializzo scacchiera vuota
+		scacchiera = new int [9][9];
+		for(int i=0; i<9; i++){
+			for(int j=0; j<9; j++){
+				scacchiera[i][j] = 0;
+			}
+		}
+		//Imposto i valori utilizzabili
+		valori = new int[9];
+		for(int i=0; i<9; i++){
+			valori[i] = i+1;
 		}
 	}
 	
-	public List<Scacchiera> prepare(List<Label> labelList){
-		int i = 0;
-		for(Posizione p : layout.getPosizioniValide()){
-			layout.getScacchiera().put(p, Integer.parseInt(labelList.get(i).getText()));
-			i ++;
-		}
+	public int[][] prepare(List<Label> labelList){
+		int k = 0;
+		for(int i=0; i<9; i++){
+			for(int j=0; j<9; j++){
+				scacchiera[i][j] = Integer.parseInt(labelList.get(k).getText());
+				k ++;
+			}
+		}	
 		//Stampa il sudoku nella console
-		/*System.out.println(Scacchiera di partenza: ");
-		 * for(int x=1; x<=9; x++){
-			for(int y=1; y<=9; y++){
-				System.out.print(layout.getScacchiera().get(new Posizione(x,y))+" ");
+		/*System.out.println("Scacchiera di partenza: ");
+		  for(int x=0; x<9; x++){
+			for(int y=0; y<9; y++){
+				System.out.print(scacchiera[x][y]+" ");
 			}
 			System.out.print("\n");
-		}
-		solve(layout, valori, 0);*/
-		return tutte;
-	}
-	
-	
-	// Struttura di un algoritmo ricorsivo generico
-	void recursive (/*... , level*/) {
-		/*// E -- sequenza di istruzioni che vengono eseguite sempre
-		// Da usare solo in casi rari (es. Ruzzle)
-		doAlways();
-		// A
-		if (condizione di terminazione) {
-			//doSomething;
-			return;
-		}
-		// Potrebbe essere anche un while ()
-		for () {
-			// B
-			generaNuovaSoluzioneParziale;
-			if (filtro) { // C
-				recursive (..., level + 1);
-			}
-			// D
-			backtracking;
 		}*/
+		if(nextCell(0, 0)){
+			System.out.println("Bella");
+		}
+		return scacchiera;
 	}
 	
-	public boolean mossaValida(int i, Posizione p, Scacchiera layout){
-		int x = p.getX();
-		int y = p.getY();
-		//Controllo se sulla riga ho lo stesso numero
-		for(int c=1; c<=9; c++){
-			if(layout.getScacchiera().get(new Posizione(x, c)) == i){
+	public boolean nextCell(int x, int y) {
+		int nextX = x;
+		int nextY = y;
+		int[] toCheck = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+		Random r = new Random();
+		int tmp = 0;
+		int current = 0;
+		int top = toCheck.length;
+
+		for (int i = top - 1; i > 0; i--) {
+			current = r.nextInt(i);
+			tmp = toCheck[current];
+			toCheck[current] = toCheck[i];
+			toCheck[i] = tmp;
+		}
+
+		for (int i = 0; i < toCheck.length; i++) {
+			if (legalMove(x, y, toCheck[i])) {
+				scacchiera[x][y] = toCheck[i];
+				if (x == 8) {
+					if (y == 8){
+						return true;// We're done! Yay!
+					}
+					else { //Ultima riga ma non ultima colonna
+						nextX = x;
+						nextY = y + 1;
+					}
+				} else {//Non sei all'ultima riga
+					if(y == 8){ //Ultima colonna, passa alla riga dopo
+						nextX = x+1;
+						nextY = 0;
+					}
+					else{
+						nextX = x;
+						nextY = y + 1;
+					}
+					
+				}
+				if (nextCell(nextX, nextY))
+					return true;
+			}
+		}
+		scacchiera[x][y] = 0;
+		return false;
+	}
+	
+	private boolean legalMove(int x, int y, int current) {
+		for (int i = 0; i < 9; i++) {
+			if (current == scacchiera[x][i])
 				return false;
-			}
 		}
-		//Controllo sulla colonna
-		for(int r=1; r<=9; r++){
-			if(layout.getScacchiera().get(new Posizione(r, y)) == i){
+		for (int i = 0; i < 9; i++) {
+			if (current == scacchiera[i][y])
 				return false;
-			}
 		}
-		//Controllo il quadrato di riferimento
-		if(x<=3){
-			//Primo blocco orizzontale
-			if(y<=3){
-				//Primo quadrato
-				for(int j=1; j<=3; j++){
-					for(int k=1; k<=3; k++){
-						if(layout.getScacchiera().get(new Posizione(j, k)) == i){
-							return false;
-						}
-					}
-				}
-			}
-			else if(y>3 && y>=6){
-				//secondo quadrato
-				for(int j=1; j<=3; j++){
-					for(int k=4; k<=6; k++){
-						if(layout.getScacchiera().get(new Posizione(j, k)) == i){
-							return false;
-						}
-					}
-				}
-			}
-			else{
-				//Terzo quadrato
-				for(int j=1; j<=3; j++){
-					for(int k=7; k<=9; k++){
-						if(layout.getScacchiera().get(new Posizione(j, k)) == i){
-							return false;
-						}
-					}
-				}
-			}
-		}
-		else if(x>3 && x<=6){
-			//secondo blocco orizzontale
-			if(y<=3){
-				//Primo quadrato
-				for(int j=4; j<=6; j++){
-					for(int k=1; k<=3; k++){
-						if(layout.getScacchiera().get(new Posizione(j, k)) == i){
-							return false;
-						}
-					}
-				}
-			}
-			else if(y>3 && y>=6){
-				//secondo quadrato
-				for(int j=4; j<=6; j++){
-					for(int k=4; k<=6; k++){
-						if(layout.getScacchiera().get(new Posizione(j, k)) == i){
-							return false;
-						}
-					}
-				}
-			}
-			else{
-				//Terzo quadrato
-				for(int j=4; j<=6; j++){
-					for(int k=7; k<=9; k++){
-						if(layout.getScacchiera().get(new Posizione(j, k)) == i){
-							return false;
-						}
-					}
-				}
-			}
-		}
-		else{
-			//Terzo blocco orizzontale
-			if(y<=3){
-				//Primo quadrato
-				for(int j=7; j<=9; j++){
-					for(int k=1; k<=3; k++){
-						if(layout.getScacchiera().get(new Posizione(j, k)) == i){
-							return false;
-						}
-					}
-				}
-			}
-			else if(y>3 && y>=6){
-				//secondo quadrato
-				for(int j=7; j<=9; j++){
-					for(int k=4; k<=6; k++){
-						if(layout.getScacchiera().get(new Posizione(j, k)) == i){
-							return false;
-						}
-					}
-				}
-			}
-			else{
-				//Terzo quadrato
-				for(int j=7; j<=9; j++){
-					for(int k=7; k<=9; k++){
-						if(layout.getScacchiera().get(new Posizione(j, k)) == i){
-							return false;
-						}
-					}
-				}
-			}
-		}
+		int cornerX = 0;
+		int cornerY = 0;
+		if (x > 2)
+			if (x > 5)
+				cornerX = 6;
+			else
+				cornerX = 3;
+		if (y > 2)
+			if (y > 5)
+				cornerY = 6;
+			else
+				cornerY = 3;
+		for (int i = cornerX; i < 10 && i < cornerX + 3; i++)
+			for (int j = cornerY; j < 10 && j < cornerY + 3; j++)
+				if (current == scacchiera[i][j])
+					return false;
 		return true;
 	}
 	
